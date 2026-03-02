@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 	"url-checker/internal/checker"
+	"url-checker/internal/models"
 )
 
 func main() {
@@ -14,13 +15,24 @@ func main() {
 		"https://httpbin.org/delay/5", // тормоз
 	}
 
+	//timeout := 5 * time.Second
+	results := make(chan models.CheckResult)
+
 	for _, url := range urls {
-		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		go func(currentURL string) {
+			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 
-		result := checker.CheckerURL(ctx, url)
-		cancel()
+			result := checker.CheckerURL(ctx, currentURL)
+			cancel()
+			results <- result
+		}(url)
+	}
 
-		fmt.Println("Checker URL:")
+	fmt.Println("Checker URL:")
+	for i := 0; i < len(urls); i++ {
+		result := <-results
+		close(results)
+
 		if result.Error != nil {
 			fmt.Printf(" %s - Ошибка: %v (время: %v)\n",
 				result.URL, result.Error, result.Latency)
@@ -29,4 +41,5 @@ func main() {
 				result.URL, result.Status, result.Latency)
 		}
 	}
+
 }
