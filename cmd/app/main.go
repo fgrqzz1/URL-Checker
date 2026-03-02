@@ -41,5 +41,9 @@ func main() {
 				result.URL, result.Status, result.Latency)
 		}
 	}
+	// todo: добавить тесты
+	// todo: исправить закрытие канала
+	// todo: сделать ввод урл
+	// todo: сделать ридми
 
 }
