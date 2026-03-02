@@ -9,6 +9,8 @@ type CheckResult struct {
 	Latency time.Duration `json:"latency"`
 }
 
+var timeout = time.Second * 5
+
 func (r CheckResult) ErrorMessage() string {
 	if r.Error != nil {
 		return r.Error.Error()

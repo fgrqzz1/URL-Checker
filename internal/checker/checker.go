@@ -1,15 +1,25 @@
 package checker
 
 import (
+	"context"
 	"net/http"
 	"time"
 	"url-checker/internal/models"
 )
 
-func CheckerURL(url string) models.CheckResult {
+func CheckerURL(ctx context.Context, url string) models.CheckResult {
 	timeStart := time.Now()
 
-	resp, err := http.Get(url)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return models.CheckResult{
+			URL:     url,
+			Error:   err,
+			Latency: time.Since(timeStart),
+		}
+	}
+
+	resp, err := http.DefaultClient.Do(req)
 	latency := time.Since(timeStart)
 
 	if err != nil {
