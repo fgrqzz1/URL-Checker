@@ -1,56 +1,31 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"sync"
-	"time"
-	"url-checker/internal/checker"
-	"url-checker/internal/models"
+	"os"
+	"url-checker/internal/service"
 )
 
 func main() {
-	urls := []string{
-		"https://www.google.com",
-		"https://www.vk.com",
-		"https://httpbin.org/delay/5", // тормоз
+	input, err := service.ParseInput()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Ошибка: %v\n", err)
+		os.Exit(1)
 	}
 
-	//timeout := 5 * time.Second
-	results := make(chan models.CheckResult)
-
-	var wg sync.WaitGroup
-
-	for _, url := range urls {
-		wg.Add(1)
-		go func(currentURL string) {
-			defer wg.Done()
-
-			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-			defer cancel()
-
-			result := checker.CheckerURL(ctx, currentURL)
-			results <- result
-		}(url)
+	if input.ShowHelp {
+		service.InputHelp()
 	}
 
-	go func() {
-		wg.Wait()
-		close(results)
-	}()
-
-	fmt.Println("Checker URL:")
-	for result := range results {
-		if result.Error != nil {
-			fmt.Printf(" %s - Ошибка: %v (время: %v)\n",
-				result.URL, result.Error, result.Latency)
-		} else {
-			fmt.Printf("%s - Статус: %d (время: %v)\n",
-				result.URL, result.Status, result.Latency)
-		}
+	if err := input.Validate(); err != nil {
+		fmt.Fprintf(os.Stderr, "Ошибка: %v\n", err)
+		fmt.Fprintln(os.Stderr, "Используйте флаг -hellp для справки")
+		os.Exit(1)
 	}
+
+	service.RunChecker(input)
+
 	// todo: добавить тесты
-	// todo: сделать ввод урл
 	// todo: сделать ридми
 
 }
