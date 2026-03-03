@@ -2,9 +2,12 @@ package service
 
 import (
 	"fmt"
-	"github.com/spf13/pflag"
+	"os"
+	"strings"
 	"time"
 	"url-checker/internal/models"
+
+	"github.com/spf13/pflag"
 )
 
 func ParseInput() (*models.InputData, error) {
@@ -35,4 +38,21 @@ func ParseInput() (*models.InputData, error) {
 	}
 
 	return &input, nil
+}
+
+func readURLsFromFile(filename string) ([]string, error) {
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var urls []string
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if line != "" && !strings.HasPrefix(line, "#") {
+            urls = append(urls, line)
+		}
+	}
+
+	return urls, nil
 }
