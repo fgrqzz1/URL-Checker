@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"time"
 	"url-checker/internal/checker"
 	"url-checker/internal/models"
 )
@@ -20,7 +19,7 @@ func RunChecker(data *models.InputData) error {
 		go func(currentURL string) {
 			defer wg.Done()
 
-			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), data.Timeout)
 			defer cancel()
 
 			result := checker.CheckerURL(ctx, currentURL)

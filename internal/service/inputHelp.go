@@ -1,8 +1,9 @@
 package service
 
 import (
-	"flag"
 	"fmt"
+
+	"github.com/spf13/pflag"
 )
 
 func InputHelp() {
@@ -10,7 +11,7 @@ func InputHelp() {
 	fmt.Println("\nИспользование:")
 	fmt.Println("  url-checker [флаги] [URL...]")
 	fmt.Println("\nФлаги:")
-	flag.PrintDefaults()
+	pflag.PrintDefaults()
 	fmt.Println("\nПримеры:")
 	fmt.Println("  url-checker -u https://google.com,https://ya.ru")
 	fmt.Println("  url-checker -t 5s https://google.com https://github.com")

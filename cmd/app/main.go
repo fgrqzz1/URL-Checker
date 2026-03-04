@@ -9,7 +9,7 @@ import (
 func main() {
 	input, err := service.ParseInput()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Ошибка: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Ошибка: %v\n", err)
 		os.Exit(1)
 	}
 
@@ -19,7 +19,7 @@ func main() {
 
 	if err := input.Validate(); err != nil {
 		fmt.Fprintf(os.Stderr, "Ошибка: %v\n", err)
-		fmt.Fprintln(os.Stderr, "Используйте флаг -hellp для справки")
+		fmt.Fprintln(os.Stderr, "Используйте флаг --helo для справки")
 		os.Exit(1)
 	}
 

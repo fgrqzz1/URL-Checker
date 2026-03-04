@@ -12,9 +12,8 @@ func (i *InputData) Validate() error {
 	}
 
 	if i.Timeout <= 0 {
-		return errors.New("Не валидный таймаут | > 0")
+		return errors.New("Не валидный таймаут | >0")
 	}
 
 	return nil
 }
-
